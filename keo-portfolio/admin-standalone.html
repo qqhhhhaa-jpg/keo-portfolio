@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم KEO / كيو</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --red: #e11d2e; --red-dark: #b3121f; --white: #fff;
+      --gray-50: #f8f8f8; --gray-100: #f1f1f1; --gray-200: #e5e5e5;
+      --gray-600: #6b7280; --gray-800: #1f2937; --gray-900: #111827;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --font-head: 'Cairo', sans-serif; --font-body: 'Tajawal', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--gray-50); color: var(--gray-800); }
+    h1,h2,h3,h4 { font-family: var(--font-head); color: var(--gray-900); }
+
+    /* ===== Login ===== */
+    .login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+      padding: 20px;
+    }
+    .login-box {
+      background: var(--white); border-radius: 20px; padding: 44px 40px;
+      width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      text-align: center;
+    }
+    .login-logo {
+      width: 70px; height: 70px; background: var(--red); color: var(--white);
+      border-radius: 18px; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head); font-size: 34px; font-weight: 900;
+      margin: 0 auto 20px;
+    }
+    .login-box h1 { font-size: 24px; margin-bottom: 6px; }
+    .login-box p { color: var(--gray-600); margin-bottom: 28px; }
+    .login-box input {
+      width: 100%; padding: 14px 16px; border: 2px solid var(--gray-100);
+      border-radius: 12px; font-family: var(--font-body); font-size: 16px;
+      margin-bottom: 14px; background: var(--gray-50); transition: .3s;
+    }
+    .login-box input:focus { outline: none; border-color: var(--red); background: var(--white); }
+    .login-btn {
+      width: 100%; padding: 14px; background: var(--red); color: var(--white);
+      border: none; border-radius: 12px; font-family: var(--font-head);
+      font-size: 17px; font-weight: 700; cursor: pointer; transition: .3s;
+    }
+    .login-btn:hover { background: var(--red-dark); }
+    .login-error { color: var(--red); font-size: 14px; margin-top: 10px; min-height: 20px; }
+
+    /* ===== Dashboard ===== */
+    .dashboard { display: none; }
+    .dashboard.active { display: block; }
+
+    .topbar {
+      background: var(--white); padding: 16px 30px; display: flex;
+      align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05); position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 10px; }
+    .topbar-logo .mark {
+      width: 38px; height: 38px; background: var(--red); color: var(--white);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head); font-weight: 900; font-size: 20px;
+    }
+    .topbar-logo span { font-family: var(--font-head); font-weight: 900; font-size: 19px; }
+    .topbar-actions { display: flex; align-items: center; gap: 14px; }
+    .view-site {
+      color: var(--red); font-weight: 700; text-decoration: none; font-size: 15px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .logout-btn {
+      background: var(--gray-100); border: none; padding: 9px 18px; border-radius: 10px;
+      font-family: var(--font-head); font-weight: 700; cursor: pointer; color: var(--gray-800);
+      transition: .3s; display: flex; align-items: center; gap: 6px;
+    }
+    .logout-btn:hover { background: var(--red); color: var(--white); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 30px 24px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 34px; }
+    .stat-card {
+      background: var(--white); border-radius: 16px; padding: 24px; box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 18px;
+    }
+    .stat-icon {
+      width: 54px; height: 54px; border-radius: 14px; display: flex;
+      align-items: center; justify-content: center; font-size: 22px;
+    }
+    .stat-icon.red { background: rgba(225,29,46,.1); color: var(--red); }
+    .stat-icon.green { background: rgba(22,163,74,.1); color: #16a34a; }
+    .stat-icon.blue { background: rgba(59,130,246,.1); color: #3b82f6; }
+    .stat-num { font-family: var(--font-head); font-size: 28px; font-weight: 900; }
+    .stat-label { color: var(--gray-600); font-size: 14px; }
+
+    .panel {
+      background: var(--white); border-radius: 16px; padding: 28px; box-shadow: var(--shadow);
+      margin-bottom: 30px;
+    }
+    .panel h2 { font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .panel h2 i { color: var(--red); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-grid label { font-weight: 700; font-size: 14px; margin-bottom: 6px; display: block; }
+    .form-grid input, .form-grid select, .form-grid textarea {
+      width: 100%; padding: 12px 14px; border: 2px solid var(--gray-100);
+      border-radius: 10px; font-family: var(--font-body); font-size: 15px;
+      background: var(--gray-50); transition: .3s;
+    }
+    .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
+      outline: none; border-color: var(--red); background: var(--white);
+    }
+    .form-grid textarea { resize: vertical; }
+
+    .upload-btn {
+      background: var(--red); color: var(--white); border: none; padding: 13px 26px;
+      border-radius: 10px; font-family: var(--font-head); font-weight: 700; font-size: 16px;
+      cursor: pointer; transition: .3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .upload-btn:hover { background: var(--red-dark); }
+
+    /* Works list */
+    .works-list, .programs-list { display: grid; gap: 14px; }
+    .work-item, .program-item {
+      display: flex; align-items: center; gap: 16px; padding: 14px;
+      background: var(--gray-50); border-radius: 12px; border: 1px solid var(--gray-100);
+    }
+    .work-item img { width: 70px; height: 55px; object-fit: cover; border-radius: 8px; }
+    .work-item .info, .program-item .info { flex: 1; }
+    .work-item .info h4, .program-item .info h4 { font-size: 16px; }
+    .work-item .info span, .program-item .info span { color: var(--gray-600); font-size: 13px; }
+    .delete-btn {
+      background: none; border: none; color: var(--gray-600); font-size: 18px;
+      cursor: pointer; transition: .3s; padding: 8px;
+    }
+    .delete-btn:hover { color: var(--red); transform: scale(1.15); }
+
+    .empty { text-align: center; color: var(--gray-600); padding: 30px; }
+    .empty i { font-size: 40px; opacity: .4; margin-bottom: 10px; display: block; }
+
+    .toast {
+      position: fixed; bottom: 30px; right: 30px; background: #16a34a; color: var(--white);
+      padding: 14px 24px; border-radius: 12px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      transform: translateY(100px); opacity: 0; transition: .4s; z-index: 1000;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { background: var(--red); }
+
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LOGIN ===== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="login-logo">K</div>
+      <h1>لوحة تحكم KEO</h1>
+      <p>سجّل دخولك لإدارة أعمالك</p>
+      <input type="text" id="loginUser" placeholder="اسم المستخدم">
+      <input type="password" id="loginPass" placeholder="كلمة السر">
+      <button class="login-btn" id="loginBtn">دخول <i class="fas fa-sign-in-alt"></i></button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div class="dashboard" id="dashboard">
+    <div class="topbar">
+      <div class="topbar-logo">
+        <div class="mark">K</div>
+        <span>لوحة تحكم KEO / كيو</span>
+      </div>
+      <div class="topbar-actions">
+        <a href="index.html" class="view-site" target="_blank"><i class="fas fa-external-link-alt"></i> عرض الموقع</a>
+        <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon red"><i class="fas fa-eye"></i></div>
+          <div><div class="stat-num" id="statViews">0</div><div class="stat-label">مشاهدة الموقع</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fas fa-images"></i></div>
+          <div><div class="stat-num" id="statWorks">0</div><div class="stat-label">عمل منشور</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fas fa-rocket"></i></div>
+          <div><div class="stat-num" id="statPrograms">0</div><div class="stat-label">برنامج</div></div>
+        </div>
+      </div>
+
+      <!-- Upload work -->
+      <div class="panel">
+        <h2><i class="fas fa-cloud-upload-alt"></i> نشر عمل جديد</h2>
+        <form id="workForm" class="form-grid">
+          <div>
+            <label>عنوان العمل *</label>
+            <input type="text" id="workTitle" placeholder="مثال: ملزمة الرياضيات" required>
+          </div>
+          <div>
+            <label>التصنيف</label>
+            <select id="workCategory">
+              <option value="ملازم">ملازم</option>
+              <option value="مناهج">مناهج</option>
+              <option value="هويات">هويات بصرية</option>
+              <option value="سوشيال">سوشيال ميديا</option>
+            </select>
+          </div>
+          <div class="full">
+            <label>رابط المنصة (اختياري — عند النقر يحولك للمنصة)</label>
+            <input type="text" id="workLink" placeholder="https://t.me/keo">
+          </div>
+          <div class="full">
+            <label>صور العمل *</label>
+            <input type="file" id="workImage" accept="image/*" multiple required>
+            <small style="color: var(--gray-600); font-size: 13px;">يمكنك اختيار أكثر من صورة</small>
+          </div>
+          <div class="full">
+            <button type="submit" class="upload-btn"><i class="fas fa-upload"></i> نشر العمل</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Works list -->
+      <div class="panel">
+        <h2><i class="fas fa-images"></i> أعمالك المنشورة</h2>
+        <div class="works-list" id="worksList">
+          <div class="empty"><i class="fas fa-images"></i>ما عندك أعمال منشورة بعد</div>
+        </div>
+      </div>
+
+      <!-- Add program -->
+      <div class="panel">
+        <h2><i class="fas fa-rocket"></i> إضافة برنامج / منصة</h2>
+        <form id="programForm" class="form-grid">
+          <div>
+            <label>اسم البرنامج *</label>
+            <input type="text" id="progName" placeholder="مثال: منهاج الرياضيات" required>
+          </div>
+          <div>
+            <label>المنصة</label>
+            <select id="progPlatform">
+              <option value="telegram">تيليجرام</option>
+              <option value="whatsapp">واتساب</option>
+              <option value="instagram">انستغرام</option>
+              <option value="website">موقع</option>
+            </select>
+          </div>
+          <div class="full">
+            <label>رابط المنصة *</label>
+            <input type="text" id="progLink" placeholder="https://t.me/keo" required>
+          </div>
+          <div class="full">
+            <label>رسالة الترحيب (تُرسل تلقائياً عند النقر)</label>
+            <textarea id="progWelcome" rows="2" placeholder="أهلاً بك في KEO / كيو! كيف أقدر أساعدك؟"></textarea>
+          </div>
+          <div class="full">
+            <button type="submit" class="upload-btn"><i class="fas fa-plus"></i> إضافة البرنامج</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Programs list -->
+      <div class="panel">
+        <h2><i class="fas fa-list"></i> البرامج / المنصات</h2>
+        <div class="programs-list" id="programsList">
+          <div class="empty"><i class="fas fa-rocket"></i>ما عندك برامج مضافة بعد</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let isAdmin = false;
+    let works = [];
+    let programs = [];
+    let viewCount = 0;
+
+    // ===== Toast =====
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (isError ? ' error' : '');
+      setTimeout(() => t.className = 'toast', 3000);
+    }
+
+    // ===== Check session =====
+    function checkSession() {
+      const saved = localStorage.getItem('keo_admin');
+      if (saved === 'true') {
+        isAdmin = true;
+        showDashboard();
+        loadAll();
+      }
+    }
+
+    // ===== Login =====
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const user = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      const err = document.getElementById('loginError');
+      err.textContent = '';
+      if (!user || !pass) { err.textContent = 'أدخل اسم المستخدم وكلمة السر'; return; }
+      
+      // بيانات الدخول الثابتة
+      if (user === 'keo' && pass === 'keo2026') {
+        isAdmin = true;
+        localStorage.setItem('keo_admin', 'true');
+        showDashboard();
+        loadAll();
+        showToast('أهلاً بك في لوحة التحكم!');
+      } else {
+        err.textContent = 'بيانات الدخول غير صحيحة';
+      }
+    });
+
+    // Enter key on password
+    document.getElementById('loginPass').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('loginBtn').click();
+    });
+
+    // ===== Logout =====
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('keo_admin');
+      isAdmin = false;
+      document.getElementById('dashboard').classList.remove('active');
+      document.getElementById('loginScreen').style.display = 'flex';
+    });
+
+    function showDashboard() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').classList.add('active');
+    }
+
+    // ===== Load all =====
+    function loadAll() {
+      loadViews();
+      loadWorks();
+      loadPrograms();
+    }
+
+    function loadViews() {
+      viewCount = parseInt(localStorage.getItem('keo_views') || '0');
+      document.getElementById('statViews').textContent = viewCount;
+    }
+
+    function loadWorks() {
+      works = JSON.parse(localStorage.getItem('keo_works') || '[]');
+      document.getElementById('statWorks').textContent = works.length;
+      const list = document.getElementById('worksList');
+      if (works.length === 0) {
+        list.innerHTML = '<div class="empty"><i class="fas fa-images"></i>ما عندك أعمال منشورة بعد</div>';
+        return;
+      }
+      list.innerHTML = works.map(w => `
+        <div class="work-item">
+          <img src="${w.image}" alt="${w.title}">
+          <div class="info">
+            <h4>${w.title}</h4>
+            <span>${w.category}${w.link ? ' • له رابط' : ''}</span>
+          </div>
+          <button class="delete-btn" onclick="deleteWork('${w.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    function deleteWork(id) {
+      if (!confirm('متأكد تريد حذف هذا العمل؟')) return;
+      works = works.filter(w => w.id !== id);
+      localStorage.setItem('keo_works', JSON.stringify(works));
+      loadWorks();
+      showToast('تم حذف العمل');
+    }
+
+    function loadPrograms() {
+      programs = JSON.parse(localStorage.getItem('keo_programs') || '[]');
+      document.getElementById('statPrograms').textContent = programs.length;
+      const list = document.getElementById('programsList');
+      if (programs.length === 0) {
+        list.innerHTML = '<div class="empty"><i class="fas fa-rocket"></i>ما عندك برامج مضافة بعد</div>';
+        return;
+      }
+      list.innerHTML = programs.map(p => `
+        <div class="program-item">
+          <div class="info">
+            <h4>${p.name}</h4>
+            <span>${p.platform} • ${p.link}</span>
+          </div>
+          <button class="delete-btn" onclick="deleteProgram('${p.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    function deleteProgram(id) {
+      if (!confirm('متأكد تريد حذف هذا البرنامج؟')) return;
+      programs = programs.filter(p => p.id !== id);
+      localStorage.setItem('keo_programs', JSON.stringify(programs));
+      loadPrograms();
+      showToast('تم حذف البرنامج');
+    }
+
+    // ===== Upload work =====
+    document.getElementById('workForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('workTitle').value.trim();
+      const category = document.getElementById('workCategory').value;
+      const link = document.getElementById('workLink').value.trim();
+      const imageFiles = document.getElementById('workImage').files;
+      
+      if (imageFiles.length === 0) {
+        showToast('اختر على الأقل صورة واحدة', true);
+        return;
+      }
+
+      // تحويل كل الصور إلى base64
+      const images = [];
+      for (let i = 0; i < imageFiles.length; i++) {
+        const file = imageFiles[i];
+        const reader = new FileReader();
+        await new Promise(resolve => {
+          reader.onload = function(event) {
+            images.push(event.target.result);
+            resolve();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // إنشاء عمل لكل صورة
+      images.forEach(image => {
+        const work = {
+          id: Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9),
+          title,
+          category,
+          link,
+          image,
+          created: Date.now()
+        };
+        
+        works.push(work);
+      });
+      
+      localStorage.setItem('keo_works', JSON.stringify(works));
+      loadWorks();
+      showToast(`تم نشر ${images.length} صورة بنجاح!`);
+      e.target.reset();
+    });
+
+    // ===== Add program =====
+    document.getElementById('programForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('progName').value.trim();
+      const platform = document.getElementById('progPlatform').value;
+      const link = document.getElementById('progLink').value.trim();
+      const welcome = document.getElementById('progWelcome').value.trim();
+      
+      const program = {
+        id: Date.now().toString(),
+        name,
+        platform,
+        link,
+        welcome,
+        created: Date.now()
+      };
+      
+      programs.push(program);
+      localStorage.setItem('keo_programs', JSON.stringify(programs));
+      loadPrograms();
+      showToast('تم إضافة البرنامج!');
+      e.target.reset();
+    });
+
+    // زيادة العدادات عند فتح الصفحة
+    viewCount++;
+    localStorage.setItem('keo_views', viewCount.toString());
+
+    checkSession();
+  </script>
+</body>
+</html>

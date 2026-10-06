@@ -1,0 +1,22 @@
+{
+  "views": 197,
+  "works": [
+    {
+      "id": "4249efb411ca47b6b6cffa8560390d11",
+      "title": "ملزمة واجبات الفيزياء",
+      "category": "ملازم",
+      "link": "",
+      "image": "/uploads/4f24f81493674d6caba49d26b8ed6dcd.jpg",
+      "created": 1791169031
+    }
+  ],
+  "programs": [
+    {
+      "id": "eeee97f81ee04d3eaeb97ae0445c9b70",
+      "name": "ملزمة الفيزياء",
+      "platform": "telegram",
+      "link": "https://t.me/keoagancy",
+      "welcome": "اهلا وسهلا بيك"
+    }
+  ]
+}
